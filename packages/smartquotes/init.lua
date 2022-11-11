@@ -19,6 +19,7 @@ package._name = "smartquotes"
 -- Called [EU-CHAR] in comments
 
 local QuotationMarks = {
+  --             Primary        Secondary
   af          = {'“',  '”',     '‘',  '’'    }, -- Afrikaans
   sq          = {'„',  '“',     '‚',  '‘'    }, -- Albanian
   am          = {'«',  '»',     '‹',  '›'    }, -- Amharic
@@ -108,10 +109,16 @@ local QuotationMarks = {
   cy          = {'‘',  '’',     '“',  '”'    }, -- Welsh
 }
 
+local InvertedQuotationRank = {
+  ['en-GB'] = true,
+  gd = true,
+  cy = true,
+}
+
 function package:registerCommands ()
   -- A. Commands (normally) intended to be used by this package only.
 
-  self:registerCommand("smartdoublequotes", function (_, content)
+  self:registerCommand("primquoted", function (_, content)
     local lang = SILE.settings:get("document.language")
     local quotes = QuotationMarks[lang]
     if not quotes or #quotes < 2 then
@@ -126,7 +133,7 @@ function package:registerCommands ()
     end
   end, "Wraps its content between language-dependent typographic primary quotes")
 
-  self:registerCommand("smartsinglequotes", function (_, content)
+  self:registerCommand("secquoted", function (_, content)
     local lang = SILE.settings:get("document.language")
     local quotes = QuotationMarks[lang]
     if not quotes or #quotes < 4 then
@@ -140,21 +147,56 @@ function package:registerCommands ()
       SILE.typesetter:typeset(quotes[4])
     end
   end, "Wraps its content between language-dependent typographic secondary quotes")
+
+  self:registerCommand("doublequoted", function (options, content)
+    local lang = SILE.settings:get("document.language")
+    local quotes = QuotationMarks[lang]
+    if quotes and InvertedQuotationRank[lang] then
+      SILE.call("secquoted", options, content)
+    else
+      SILE.call("primquoted", options, content)
+    end
+  end, "Wraps its content between language-dependent typographic double quotes")
+
+  self:registerCommand("singlequoted", function (options, content)
+    local lang = SILE.settings:get("document.language")
+    local quotes = QuotationMarks[lang]
+    if quotes and InvertedQuotationRank[lang] then
+      SILE.call("primquoted", options, content)
+    else
+      SILE.call("secquoted", options, content)
+    end
+  end, "Wraps its content between language-dependent typographic double quotes")
 end
 
 package.documentation = [[\begin{document}
-The small \autodoc:package{smartquotes} helper package allows you to easily
-obtain typographic quotation marks according to the currently selected language.
+The small \autodoc:package{smartquotes} package helps easily obtaining
+appropriate typographic quotation marks according to the currently selected
+language.
 
-It provides two commands, \autodoc:command{\smartdoublequotes{<content>}} and
-\autodoc:command{\smartsinglequotes{<content>}}. They wrap their content between
-the appropriate typographic quotation marks.
+It provides four commands:
 
-The language mappings derive from a table in the English Wikipedia. When that
-table doesn’t specify secondary marks, this package doesn’t try to guess what
-a logical replacement might be, because bad typography shouldn’t be the
-silent norm. Therefore, a warning is generated and straight (non-typographic) character
-are used.
+\begin{itemize}
+\item{\autodoc:command{\primquoted{<content>}}}
+\item{\autodoc:command{\secquoted{<content>}}}
+\item{\autodoc:command{\doublequoted{<content>}}}
+\item{\autodoc:command{\singlequoted{<content>}}}
+\end{itemize}
+
+The two first commands wrap their content between the appropriate typographic
+primary and secondary quotation marks, where “primary” stands for the most
+usual marks (coming at first quotation rank), and “secondary” the marks normally
+used when inside an already quoted text (hence, at second quotation rank).
+
+The two last commands wrap their content between the typographic single and double
+quotation marks, taking into account that a few languages use single quotes as primary
+marks.
+
+Note that the language mappings derive from tables from several sources.
+When the latter didn’t specify secondary marks, this package doesn’t try
+to guess what a logical replacement might be, because bad typography shouldn’t be
+the silent norm. Therefore, a warning is generated and straight (non-typographic)
+character are used.
 \end{document}]]
 
 return package

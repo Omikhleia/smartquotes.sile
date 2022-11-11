@@ -6,7 +6,7 @@ source = {
 description = {
   summary = "Typographic quotation marks with the SILE typesetting system.",
   detailed = [[
-    This package for the SILE typesetter helps obtaining typographic quotation marks,
+    This package for the SILE typesetter helps obtaining appropriate typographic quotation marks,
     depending on the current language.
   ]],
   homepage = "https://github.com/Omikhleia/smartquotes.sile",

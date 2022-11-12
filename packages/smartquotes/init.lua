@@ -150,22 +150,14 @@ function package:registerCommands ()
 
   self:registerCommand("doublequoted", function (options, content)
     local lang = SILE.settings:get("document.language")
-    local quotes = QuotationMarks[lang]
-    if quotes and InvertedQuotationRank[lang] then
-      SILE.call("secquoted", options, content)
-    else
-      SILE.call("primquoted", options, content)
-    end
+    local command = InvertedQuotationRank[lang] and "secquoted" or "primquoted"
+    SILE.call(command, options, content)
   end, "Wraps its content between language-dependent typographic double quotes")
 
   self:registerCommand("singlequoted", function (options, content)
     local lang = SILE.settings:get("document.language")
-    local quotes = QuotationMarks[lang]
-    if quotes and InvertedQuotationRank[lang] then
-      SILE.call("primquoted", options, content)
-    else
-      SILE.call("secquoted", options, content)
-    end
+    local command = InvertedQuotationRank[lang] and "primquoted" or "secquoted"
+    SILE.call(command, options, content)
   end, "Wraps its content between language-dependent typographic double quotes")
 end
 
@@ -196,7 +188,7 @@ Note that the language mappings derive from tables from several sources.
 When the latter didn’t specify secondary marks, this package doesn’t try
 to guess what a logical replacement might be, because bad typography shouldn’t be
 the silent norm. Therefore, a warning is generated and straight (non-typographic)
-character are used.
+characters are used.
 \end{document}]]
 
 return package

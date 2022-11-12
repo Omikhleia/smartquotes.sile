@@ -10,6 +10,10 @@ current language.
 
 ![Typographic quotation marks](smartquotes.png)
 
+The main reason why this package was designed is for “smart” typography in Markdown to be possible for a wide
+range of languages, automatically replacing the straight (non-typographic) quotation marks by something
+appropriate.
+
 ## Installation
 
 This module collection requires SILE v0.14 or upper.

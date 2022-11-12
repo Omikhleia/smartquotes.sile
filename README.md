@@ -8,6 +8,8 @@ This small helper package for the [SILE](https://github.com/sile-typesetter/sile
 typesetting system helps obtaining typographic quotation marks depending on the
 current language.
 
+![Typographic quotation marks](smartquotes.png)
+
 ## Installation
 
 This module collection requires SILE v0.14 or upper.

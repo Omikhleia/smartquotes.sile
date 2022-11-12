@@ -1,0 +1,52 @@
+\begin[papersize=a5,class=plain]{document}
+\neverindent
+\nofolios
+\use[module=packages.smartquotes]
+\font[family=Libertinus Serif, size=10]
+
+\center{\font[weight=700, size=12]{Typographic quotation marks}}
+
+\bigskip
+
+\em{Typographic quotation marks depend on the language. Exception made of a few
+languages, most have two levels of quotation marks. The “primary” marks come
+at first quotation rank, and the “secondary” ones are normally used when inside
+an already quoted text (hence, at second quotation rank).}
+
+\medskip
+Primary quoted text:
+
+\language[main=en]{\primquoted{US English}}  / \language[main=de]{\primquoted{Deutsch}} /
+\language[main=fr]{\primquoted{français}} / \language[main=da]{\primquoted{dansk}}   /
+\language[main=ru]{\primquoted{русский}}  / \language[main=cy]{\primquoted{Ghàidhlig}}.
+
+\medskip
+Secondary quoted text:
+
+\language[main=en]{\secquoted{US English}}  / \language[main=de]{\secquoted{Deutsch}} /
+\language[main=fr]{\secquoted{français}} / \language[main=da]{\secquoted{dansk}}   /
+\language[main=ru]{\secquoted{русский}}  / \language[main=cy]{\secquoted{Ghàidhlig}}.
+
+\bigskip
+\em{There is no such thing as “double” or “single” quotes in good typography usage,
+for printed texts.
+The issue is rather: What would one expect, as appropriate typographic replacement for
+the straight double (") and single (') quotation marks in a given language?
+For most languages, we could just map them to the primary and secondary quotations marks,
+respectively. In some languages, though, they are used the other way round.}
+
+\medskip
+Double quoted text:
+
+\language[main=en]{\doublequoted{US English}}  / \language[main=de]{\doublequoted{Deutsch}} /
+\language[main=fr]{\doublequoted{français}} / \language[main=da]{\doublequoted{dansk}}   /
+\language[main=ru]{\doublequoted{русский}}  / \language[main=cy]{\doublequoted{Ghàidhlig}}.
+
+\medskip
+Single quoted text:
+
+\language[main=en]{\singlequoted{US English}}  / \language[main=de]{\singlequoted{Deutsch}} /
+\language[main=fr]{\singlequoted{français}} / \language[main=da]{\singlequoted{dansk}}   /
+\language[main=ru]{\singlequoted{русский}}  / \language[main=cy]{\singlequoted{Ghàidhlig}}.
+
+\end{document}

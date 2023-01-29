@@ -179,12 +179,26 @@ The two first commands wrap their content between the appropriate typographic
 primary and secondary quotation marks, where “primary” stands for the most
 usual marks (coming at first quotation rank), and “secondary” the marks normally
 used when inside an already quoted text (hence, at second quotation rank).
+For instance, here are primary marks in \language[main=en]{\primquoted{US English}} /
+\language[main=de]{\primquoted{Deutsch}} /
+\language[main=fr]{\primquoted{français}}; and secondary marks in
+\language[main=en]{\secquoted{US English}} / \language[main=de]{\secquoted{Deutsch}} /
+\language[main=fr]{\secquoted{français}}.
 
-The two last commands wrap their content between the typographic single and double
-quotation marks, taking into account that a few languages use single quotes as primary
-marks.
+The two last commands wrap their content between the closest typographic
+equivalent marks for replacing double and single quotation marks,
+taking into account that a few languages use single quotes as primary
+marks.\footnote{There is not really such a thing as a “double” or “single” quote
+in good typography usage, for printed texts.
+The issue here is rather: What would one expect, as appropriate typographic
+replacement for the straight double (") and single (') quotation marks in a given
+language?
+For most languages, we can just map them to the primary and secondary quotations
+marks, respectively. In some languages, though, they are used the other way round.}
+These convenience commands may find a use in supporting the so-called “smart typography”
+feature with some text formats, such as Markdown.
 
-Note that the language mappings derive from tables from several sources.
+Note that the language mappings are based on tables from several sources.
 When the latter didn’t specify secondary marks, this package doesn’t try
 to guess what a logical replacement might be, because bad typography shouldn’t be
 the silent norm. Therefore, a warning is generated and straight (non-typographic)

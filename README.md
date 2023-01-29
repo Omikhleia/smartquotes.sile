@@ -12,7 +12,8 @@ current language.
 
 The main reason why this package was designed is for “smart” typography in Markdown to be possible for a wide
 range of languages, automatically replacing the straight (non-typographic) quotation marks by something
-appropriate.
+appropriate. 
+(This package is a dependency of the [markdown.sile](https://github.com/Omikhleia/markdown.sile) collection.)
 
 ## Installation
 
@@ -29,6 +30,14 @@ luarocks --lua-version 5.4 install --server=https://luarocks.org/dev smartquotes
 (Adapt to your version of Lua, if need be, and refer to the SILE manual for more
 detailed 3rd-party package installation information.)
 
+## Usage
+
+Examples are provided in the [examples](./examples) folder.
+
+The in-code package documentation may also be useful.
+A readable version of the documentation is included in the User Manual for
+the [resilient.sile](https://github.com/Omikhleia/resilient.sile) collection
+of classes and packages.
 
 ## License
 

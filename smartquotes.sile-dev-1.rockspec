@@ -1,7 +1,7 @@
 package = "smartquotes.sile"
 version = "dev-1"
 source = {
-  url = "git://github.com/Omikhleia/smartquotes.sile.git",
+  url = "git+https://github.com/Omikhleia/smartquotes.sile.git",
 }
 description = {
   summary = "Typographic quotation marks with the SILE typesetting system.",
@@ -19,5 +19,5 @@ build = {
   type = "builtin",
   modules = {
     ["sile.packages.smartquotes"] = "packages/smartquotes/init.lua",
-  }
+  },
 }

@@ -1,7 +1,8 @@
 --
 -- Smart language-dependent quotations marks for SILE
--- License: MIT, (c) 2022 Omikhleia
+-- License: MIT, (c) 2022-2023 Omikhleia
 --
+require("silex.lang")
 local base = require("packages.base")
 
 local package = pl.class(base)
@@ -115,13 +116,23 @@ local InvertedQuotationRank = {
   cy = true,
 }
 
+---@return table|boolean
+local function forLanguage(lang, lookupTable, default)
+  if lookupTable[lang] ~= nil then
+    return lookupTable[lang]
+  end
+  local res, _ = SILE.X.forLanguage(lang, lookupTable)
+  lookupTable[lang] = res or default -- memoize
+  return res or default
+end
+
 function package:registerCommands ()
   -- A. Commands (normally) intended to be used by this package only.
 
   self:registerCommand("primquoted", function (_, content)
     local lang = SILE.settings:get("document.language")
-    local quotes = QuotationMarks[lang]
-    if not quotes or #quotes < 2 then
+    local quotes = forLanguage(lang, QuotationMarks, {})
+    if #quotes < 2 then
       SU.warn("No typographic primary quotes for language '" .. lang .. "'")
       SILE.typesetter:typeset('"')
       SILE.process(content)
@@ -135,8 +146,8 @@ function package:registerCommands ()
 
   self:registerCommand("secquoted", function (_, content)
     local lang = SILE.settings:get("document.language")
-    local quotes = QuotationMarks[lang]
-    if not quotes or #quotes < 4 then
+    local quotes = forLanguage(lang, QuotationMarks, {})
+    if #quotes < 4 then
       SU.warn("No typographic secondary quotes for language '" .. lang .. "'")
       SILE.typesetter:typeset("'")
       SILE.process(content)
@@ -150,15 +161,23 @@ function package:registerCommands ()
 
   self:registerCommand("doublequoted", function (options, content)
     local lang = SILE.settings:get("document.language")
-    local command = InvertedQuotationRank[lang] and "secquoted" or "primquoted"
+    local inverted = forLanguage(lang, InvertedQuotationRank, false)
+    local command = inverted and "secquoted" or "primquoted"
     SILE.call(command, options, content)
   end, "Wraps its content between language-dependent typographic double quotes")
 
   self:registerCommand("singlequoted", function (options, content)
     local lang = SILE.settings:get("document.language")
-    local command = InvertedQuotationRank[lang] and "primquoted" or "secquoted"
+    local inverted = forLanguage(lang, InvertedQuotationRank, false)
+    local command = inverted and "primquoted" or "secquoted"
     SILE.call(command, options, content)
   end, "Wraps its content between language-dependent typographic double quotes")
+end
+
+-- For other packages needing to know the quotation marks for a given language.
+function package.quoteRules(_, lang)
+  return forLanguage(lang, QuotationMarks, {}),
+         forLanguage(lang, InvertedQuotationRank, false)
 end
 
 package.documentation = [[\begin{document}

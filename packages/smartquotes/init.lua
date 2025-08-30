@@ -1,15 +1,24 @@
+--- Smart language-dependent quotations marks for SILE.
 --
--- Smart language-dependent quotations marks for SILE
--- License: MIT, (c) 2022-2023 Omikhleia
+-- It provides commands and methods to easily obtain appropriate typographic quotation marks
+-- for a given language code in BCP 47 format.
 --
-require("silex.lang")
+-- Note the for languages such as French, which use special spacing rules with guillemets,
+-- this package does not handle them, and only provides the appropriate quotation marks.
+-- It is up to typesetting engine to handle spancing rules appropriately.
+--
+-- @copyright License: MIT (c) 2022-2023, 2025 Omikhleia
+-- @module packages.smartquotes
+--
 local base = require("packages.base")
 
 local package = pl.class(base)
 package._name = "smartquotes"
 
--- The languages are ordered by their full name (end of line comment)
--- in English, for ease of comparison and check with that table.
+-- Language-dependent quotation marks table.
+--
+-- The languages are ordered by their full name (end of line comment) in English,
+-- for ease of comparison and check with that table.
 --
 -- The list is mainly derived from
 --   https://en.wikipedia.org/wiki/Quotation_mark#Summary_table
@@ -116,16 +125,42 @@ local InvertedQuotationRank = {
   cy = true,
 }
 
----@return table|boolean
+--- A utility function to match a BCP 47 language code against a language-indexed table.
+-- Find the "closest" matching language by looping and removing a language specifier from the end,
+-- until we get a non-nil match.
+-- E.g. "xx-Xxxx-XX" will be matched against "xx-Xxxx--XX", "xx-Xxxx", "xx" until one of these are satisfied.
+---@tparam string lang Language code (BCP 47)
+---@tparam table lookupTable Language-dependent table
+---@treturn any|nil Entry for the given language
+---@treturn string|nil Closes matched language code, or nil
+local function forLanguageMatch(lang, lookupTable)
+  while lang do
+    local res = lookupTable[lang]
+    if res then
+      return res, lang
+    end
+    lang = lang:match("^(.+)-.*$") -- split at dash (-) and remove last part.
+  end
+  return nil, nil
+end
+
+--- A simple memoizing lookup function for language-indexed tables.
+-- It modifies the lookup table to add entries for languages that were not explicitly listed,
+-- but for which a "close enough" match was found, so that when once resolved, the next lookup will be faster.
+-- @tparam string lang Language code (BCP 47)
+-- @tparam table lookupTable Language-dependent table
+-- @tparam any default Default value
+-- @treturn any Entry for the given language, or default value
 local function forLanguage(lang, lookupTable, default)
   if lookupTable[lang] ~= nil then
     return lookupTable[lang]
   end
-  local res, _ = SILE.X.forLanguage(lang, lookupTable)
+  local res, _ = forLanguageMatch(lang, lookupTable)
   lookupTable[lang] = res or default -- memoize
   return res or default
 end
 
+--- Commands registration.
 function package:registerCommands ()
   -- A. Commands (normally) intended to be used by this package only.
 
@@ -174,8 +209,12 @@ function package:registerCommands ()
   end, "Wraps its content between language-dependent typographic double quotes")
 end
 
--- For other packages needing to know the quotation marks for a given language.
-function package.quoteRules(_, lang)
+--- Expose quotation rules.
+-- For use in other packages needing to know the quotation marks for a given language.
+-- @tparam string lang Language code (BCP 47)
+-- @treturn {string[4]} Primary and secondary quotation marks for the given language.
+-- @treturn boolean Whether the language uses inverted quotation ranks.
+function package:quoteRules (lang)
   return forLanguage(lang, QuotationMarks, {}),
          forLanguage(lang, InvertedQuotationRank, false)
 end
